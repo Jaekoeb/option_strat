@@ -41,9 +41,6 @@ cleaning <- function(file_name, output_file, chunk_size = 100000){
   
   # Chunk Filtering ---------------------------------------------------------
   
-  
-  start_time <- Sys.time()
-  
   repeat {
     
     # Read a chunk from the file.
@@ -97,18 +94,34 @@ cleaning <- function(file_name, output_file, chunk_size = 100000){
   }
   
   
-  end_time <- Sys.time()
-  elapsed_time <- end_time - start_time
-  beepr::beep(5)
-  elapsed_time
-  
-  
 }
 
 
-# Set filenames
-file_name  <- "data/split/option_01.csv"
-output_file <- "data/split/clean.csv"
 
-cleaning(file_name = file_name, output_file = output_file)
+# Cleaning ----------------------------------------------------------------
+
+
+file_paths <- list(
+  paste0("data/split/option_", sprintf("%02d", 1:25), ".csv"),
+  paste0("data/clean/option_", sprintf("%02d", 1:25), ".csv")
+)
+
+
+# Loop through each file path pair and apply the cleaning function
+for (k in seq_along(1:25)) {
+  
+  start_time <- Sys.time()
+  
+  cleaning(file_paths[[1]][k], file_paths[[2]][k])
+  
+  end_time <- Sys.time()
+  beepr::beep(1)
+  writeLines("__________________________________________________")
+  writeLines(paste("Finished cleaning", k, "of 25"))
+  elapsed_time <- end_time - start_time
+  elapsed_time
+  writeLines("__________________________________________________")
+  writeLines("Starting new file")
+  
+}
 
