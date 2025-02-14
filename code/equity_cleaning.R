@@ -23,9 +23,9 @@ equity <- equity |>
   mutate(price = abs(price))
 
 
-check1 <- equity |> 
-  group_by(ticker) |> 
-  summarise(missing = sum(is.na(price)))
+# check1 <- equity |> 
+#   group_by(ticker) |> 
+#   summarise(missing = sum(is.na(price)))
 
 
 # filter out all observations with missing price and return
@@ -49,6 +49,21 @@ equity <- equity |>
 equity <- equity |> 
   filter(!is.na(hist_vola))
 
+# add year and week column
+equity <- equity |> 
+  mutate(
+    year = year(date),
+    week = week(date)
+  )
+
+
+# keep only the first observation each week
+equity <- equity |> 
+  group_by(ticker, year, week) |> 
+  arrange(date) |> 
+  slice_head(n = 1) |> 
+  ungroup()
+
 
 # write equity data
-write_csv(equity, file = "equity_clean.csv")
+write_csv(equity, file = "data/equity_clean.csv")
